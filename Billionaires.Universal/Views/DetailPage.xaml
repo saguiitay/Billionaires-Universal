@@ -1,0 +1,298 @@
+<Page x:Class="Billionaires.Universal.Views.DetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Billionaires.Universal.ViewModels"
+    xmlns:controls="using:Template10.Controls"
+    mc:Ignorable="d" >
+    <Page.DataContext>
+        <vm:DetailPageViewModel />
+    </Page.DataContext>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <!-- adaptive states -->
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger x:Name="VisualStateNarrowTrigger" MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DetailsHub.Orientation" Value="Vertical" />
+                        <Setter Target="Overview.Width" Value="{StaticResource NormalMinWidth}"/>
+                        <Setter Target="OverviewSection.MaxWidth" Value="{StaticResource NormalMinWidth}"/>
+                        <Setter Target="BiographySection.MaxWidth" Value="{StaticResource NormalMinWidth}"/>
+                        <Setter Target="MilestonesSection.MaxWidth" Value="{StaticResource NormalMinWidth}"/>
+                        <Setter Target="NetWorthSection.MaxWidth" Value="{StaticResource NormalMinWidth}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger x:Name="VisualStateNormalTrigger" MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DetailsHub.Orientation" Value="Horizontal" />
+                        <Setter Target="Overview.MaxWidth" Value="600"/>
+                        <Setter Target="OverviewSection.MaxWidth" Value="400"/>
+                        <Setter Target="BiographySection.MaxWidth" Value="400"/>
+                        <Setter Target="MilestonesSection.MaxWidth" Value="500"/>
+                        <Setter Target="NetWorthSection.MaxWidth" Value="400"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- header -->
+        <controls:PageHeader Frame="{x:Bind Frame}">
+            <controls:PageHeader.Content>
+                <TextBlock Text="{Binding PersonViewModel.Person.Name.Full}" />
+            </controls:PageHeader.Content>
+
+            <controls:PageHeader.PrimaryCommands>
+                <AppBarButton Width="auto" Visibility="{Binding Prev, Converter={StaticResource NullToVisibilityConverter}}"
+                              Command="{Binding NavToPersonCommand}" CommandParameter="{Binding Prev}">
+                    <AppBarButton.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Grid.Column="0" Text="&#xE00E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Prev.Person.Name.Full}" VerticalAlignment="Center" Padding="8,0"/>
+                            <TextBlock Text="{Binding Prev.Person.Stats.Rank, Converter={StaticResource RankingFormatConverter}}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </AppBarButton.Content>
+                </AppBarButton>
+                
+                <AppBarSeparator Visibility="{Binding ShowPrevNextSeparator, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                
+                <AppBarButton Width="auto" Visibility="{Binding Next, Converter={StaticResource NullToVisibilityConverter}}"
+                              Command="{Binding NavToPersonCommand}" CommandParameter="{Binding Next}">
+                    <AppBarButton.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Next.Person.Name.Full}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Next.Person.Stats.Rank, Converter={StaticResource RankingFormatConverter}}" VerticalAlignment="Center" Padding="8,0"/>
+                            <TextBlock Grid.Column="0" Text="&#xE00F;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </AppBarButton.Content>
+                </AppBarButton>
+            </controls:PageHeader.PrimaryCommands>
+        </controls:PageHeader>
+
+        <!--#region content-->
+
+        <Grid x:Name="Overview" Grid.Row="1" MaxWidth="400" HorizontalAlignment="Left" Padding="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="200"/>
+                <ColumnDefinition MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="95"/>
+                    <ColumnDefinition Width="95"/>
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Grid.Column="0" Width="95" Height="100">
+                    <Rectangle.Fill>
+                        <ImageBrush Stretch="None" ImageSource="{Binding PersonViewModel.Image}" AlignmentX="Left" AlignmentY="Center">
+                            <ImageBrush.Transform>
+                                <CompositeTransform TranslateX="{Binding PersonViewModel.Left}"/>
+                            </ImageBrush.Transform>
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding PersonViewModel.Person.Stats.Rank, Converter={StaticResource RankingFormatConverter}}" Margin="0,0,0.333,0"/>
+                    <TextBlock Text="{Binding PersonViewModel.Person.Name.Full}"/>
+                    <TextBlock Text="{Binding PersonViewModel.Person.Stats.NetValue}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Age" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Wealth" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Last change" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="YTD change" />
+
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PersonViewModel.Person.Age}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PersonViewModel.Person.Source}" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PersonViewModel.Person.Stats.LastText}" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding PersonViewModel.Person.Stats.YtdText}" />
+            </Grid>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding PersonViewModel.Person.Details.Overview.Intel, Converter={StaticResource RandomStringFromListConverter}}" TextWrapping="WrapWholeWords" />
+        </Grid>
+        
+        <Grid Grid.Row="2">
+            
+            <Hub x:Name="DetailsHub" Orientation="Horizontal" Padding="12,0">
+                <!--<HubSection MaxWidth="400">
+                    <DataTemplate>
+                        
+                    </DataTemplate>
+                </HubSection>-->
+                <HubSection Header="Overview" x:Name="OverviewSection" MaxWidth="400" HorizontalAlignment="Left">
+                    <DataTemplate>
+                        <TextBlock Text="{Binding PersonViewModel.Person.Details.Overview.BodyText}" TextWrapping="WrapWholeWords" />
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="News" MaxWidth="400"  HorizontalAlignment="Left" Visibility="{Binding PersonViewModel.Person.Details.News, Converter={StaticResource EmptyListToVisibilityConverter}}">
+                    <DataTemplate>
+                        <GridView ItemsSource="{Binding PersonViewModel.Person.Details.News}"
+                                  SelectionMode="None">
+                            <GridView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="110">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="{Binding Thumb, Converter={StaticResource NewsWidthConverter}}"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding Thumb}" MaxHeight="110" Stretch="Uniform"
+                                               Visibility="{Binding Thumb, Converter={StaticResource NullToVisibilityConverter}}"
+                                                />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Top" Padding="4">
+                                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Date}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="Intelligence" MaxWidth="600" HorizontalAlignment="Left" Visibility="{Binding PersonViewModel.Person.Details.Overview.Intel, Converter={StaticResource EmptyListToVisibilityConverter}}">
+                    <DataTemplate>
+                        <ScrollViewer Style="{ThemeResource ScrollViewerStyle}">
+                            <ItemsControl ItemsSource="{Binding PersonViewModel.Person.Details.Overview.Intel}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="&#xE915;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Top" Padding="0,0,8,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding}" TextWrapping="WrapWholeWords"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="Possesions" MaxWidth="600" HorizontalAlignment="Left" Visibility="{Binding PersonViewModel.Person.Details.Owns, Converter={StaticResource EmptyListToVisibilityConverter}}">
+                    <DataTemplate>
+                        <FlipView ItemsSource="{Binding PersonViewModel.Person.Details.Owns}" Height="240">
+                            <FlipView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Image Height="240" Width="{Binding Width}" Source="{Binding Image}" Stretch="Fill"/>
+                                        <Border Background="#A5000000" VerticalAlignment="Bottom" >
+                                            <StackPanel Padding="8,0">
+                                                <TextBlock Text="{Binding Title}" FontSize="20" Foreground="#CCFFFFFF" FontWeight="SemiBold" TextWrapping="WrapWholeWords" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Credit}" FontSize="14" Foreground="#99FFFFFF" TextWrapping="WrapWholeWords" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                </DataTemplate>
+                            </FlipView.ItemTemplate>
+                        </FlipView>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="Biography" x:Name="BiographySection" MaxWidth="400" HorizontalAlignment="Left">
+                    <DataTemplate>
+                        <ScrollViewer Style="{ThemeResource ScrollViewerStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Birth date:" />
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Education:" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Family:" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PersonViewModel.Person.Details.Bio.Stats.Birth}" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PersonViewModel.Person.Details.Bio.Stats.Education}" TextWrapping="WrapWholeWords" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PersonViewModel.Person.Details.Bio.Stats.Family}" />
+
+                                <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" >
+                                    <TextBlock 
+                                           Text="{Binding PersonViewModel.Person.Details.Bio.BodyText}"
+                                           TextWrapping="Wrap"
+                                           />
+                                </ScrollViewer>
+                            </Grid>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="Milestones" x:Name="MilestonesSection" MaxWidth="500" HorizontalAlignment="Left" Visibility="{Binding PersonViewModel.Person.Details.Bio.Milestones, Converter={StaticResource EmptyListToVisibilityConverter}}">
+                    <DataTemplate>
+                        <ScrollViewer Style="{ThemeResource ScrollViewerStyle}">
+                            <ItemsControl ItemsSource="{Binding PersonViewModel.Person.Details.Bio.Milestones}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Year}" VerticalAlignment="Top" Padding="0,0,8,0" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Event}" TextWrapping="WrapWholeWords" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="Net worth summary" x:Name="NetWorthSection" MaxWidth="400" HorizontalAlignment="Left">
+                    <DataTemplate>
+                        <ScrollViewer Style="{ThemeResource ScrollViewerStyle}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding PersonViewModel.Person.Details.Worth.BodyText}" TextWrapping="WrapWholeWords"/>
+                                <StackPanel Orientation="Horizontal" Padding="0,8">
+                                    <TextBlock Text="Confidence rating:" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding PersonViewModel.Person.Details.Confidence.Stars}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </HubSection>
+            </Hub>
+        </Grid>
+
+        <!--#endregion-->
+
+    </Grid>
+</Page>
+

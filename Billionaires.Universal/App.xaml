@@ -1,0 +1,40 @@
+<common:BootStrapper x:Class="Billionaires.Universal.App" 
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                     xmlns:common="using:Template10.Common"
+                     xmlns:converters="using:Template10.Converters"
+                     xmlns:viewModels="using:Billionaires.Universal.ViewModels"
+                     xmlns:converters2="using:Billionaires.Universal.Mvvm.Converters">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles\Custom.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <viewModels:ViewModelLocator x:Key="Locator" />
+
+            <converters:StringFormatConverter x:Key="RankingFormatConverter" Format="#{0}" />
+
+            <converters2:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters2:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
+            <converters2:RandomStringFromListConverter x:Key="RandomStringFromListConverter" />
+
+            <converters:ValueWhenConverter x:Key="NullToVisibilityConverter" When="{x:Null}">
+                <converters:ValueWhenConverter.Value>
+                    <Visibility>Collapsed</Visibility>
+                </converters:ValueWhenConverter.Value>
+                <converters:ValueWhenConverter.Otherwise>
+                    <Visibility>Visible</Visibility>
+                </converters:ValueWhenConverter.Otherwise>
+            </converters:ValueWhenConverter>
+
+            <converters:ValueWhenConverter x:Key="NewsWidthConverter" When="{x:Null}">
+                <converters:ValueWhenConverter.Value>330</converters:ValueWhenConverter.Value>
+                <converters:ValueWhenConverter.Otherwise>220</converters:ValueWhenConverter.Otherwise>
+            </converters:ValueWhenConverter>
+
+
+        </ResourceDictionary>
+    </Application.Resources>
+
+</common:BootStrapper>
